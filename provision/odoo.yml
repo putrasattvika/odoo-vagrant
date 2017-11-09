@@ -1,0 +1,23 @@
+---
+
+- hosts: all
+  sudo: true
+
+  vars:
+    user: "{{ ansible_env.USER }}"
+
+  tasks:
+    - name: add jessie-backport to sourcelist
+      shell: echo "deb http://ftp.debian.org/debian jessie-backports main" | tee -a /etc/apt/sources.list.d/jessie-backports.list
+
+    - name: add odoo apt key
+      shell: "wget -O - https://nightly.odoo.com/odoo.key | apt-key add -"
+
+    - name: add odoo sourcelist
+      shell: echo "deb http://nightly.odoo.com/11.0/nightly/deb/ ./" | tee -a /etc/apt/sources.list.d/odoo.list
+
+    - name: install odoo
+      apt: 
+        name: odoo
+        state: installed
+        update_cache: yes
